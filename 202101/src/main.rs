@@ -7,18 +7,20 @@ fn main() {
         return;
     }
     let file_path = &args[1];
-    let file_contents = fs::read_to_string(file_path).expect("Failed to open data file");
-    let lines_iterator = file_contents.lines();
-    let lines: Vec<i32> = lines_iterator
-        .map(|line| line.parse::<i32>().expect("Failed to parse line as integer"))
-        .collect();
-    let mut counter = 0;
-    let lines_with_next = lines.iter().zip(lines.iter().skip(1));
-    for (current, next) in lines_with_next {
-        if current < next {
-            counter += 1;
-        }
-    }
 
+    let file_contents = fs::read_to_string(file_path).expect("Failed to open data file");
+
+    let counter = file_contents
+        .lines()
+        .skip(1)
+        .filter_map(|line| line.parse::<i32>().ok())
+        .fold((0, 0), |(count, prev), curr| {
+            if prev < curr {
+                (count + 1, curr)
+            } else {
+                (count, curr)
+            }
+        })
+        .0;
     println!("Ans {}", counter);
 }
