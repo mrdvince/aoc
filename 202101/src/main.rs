@@ -18,19 +18,27 @@ fn main() {
 fn part_two(file_contents: &String) -> i32 {
     let lines: Vec<_> = file_contents
         .lines()
-        .skip(1)
         .filter_map(|line| line.parse::<i32>().ok())
         .collect();
-    let mut count = 0;
-    let mut prev_sum = 0;
-    for window in lines.windows(3) {
-        let sum = window.iter().sum();
-        if sum > prev_sum {
-            count += 1;
-        }
-        prev_sum = sum;
-    }
-    count
+    // let mut count = 0;
+    // let mut prev_sum = 0;
+    // for window in lines.windows(3) {
+    //     let sum = window.iter().sum();
+    //     if sum > prev_sum {
+    //         count += 1;
+    //     }
+    //     prev_sum = sum;
+    // }
+    // count
+
+    // an interesting way i think
+    let count = (0..lines.len() - 2)
+        .zip(1..lines.len() - 2)
+        .filter(|(x, y)| {
+            lines[*x..*x + 3].iter().sum::<i32>() < lines[*y..*y + 3].iter().sum::<i32>()
+        })
+        .count();
+    count as i32
 }
 
 fn part_one(file_contents: &String) -> i32 {
